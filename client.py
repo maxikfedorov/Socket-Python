@@ -1,11 +1,52 @@
 import socket
 
-HOST = '127.0.0.1'  # Локальный адрес сервера
-PORT = 65432        # Тот же порт, что и у сервера
+# Создаем сокет
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.connect((HOST, PORT))
-    n = input('Введите число: ')
-    s.sendall(n.encode())
-    data = s.recv(1024)
-    print('Ответ сервера:', data.decode())
+# Получаем имя хоста и порт
+host = socket.gethostname()
+port = 12345
+
+# Подключаемся к серверу
+client_socket.connect((host, port))
+
+# Получаем список задач от сервера
+tasks = client_socket.recv(1024).decode()
+print(tasks)
+
+# Выбираем задачу
+task_choice = int(input("Выберите задачу: "))
+
+# Отправляем выбор задачи серверу
+client_socket.sendall(str.encode(str(task_choice)))
+
+# Обрабатываем выбор задачи и получаем ответ от сервера
+if task_choice == 1:
+    n = int(input("Введите натуральное число N: "))
+    client_socket.sendall(str.encode(str(n)))
+    result = client_socket.recv(1024).decode()
+    print(result)
+elif task_choice == 2:
+    result = client_socket.recv(1024).decode()
+    print(result)
+elif task_choice == 3:
+    result = client_socket.recv(1024).decode()
+    print(result)
+
+elif task_choice == 4:
+    while True:
+        x = float(input("Введите число x: "))
+        client_socket.sendall(str.encode(str(x)))
+        result = client_socket.recv(1024).decode()
+        print(result)
+        if result == "Число не входит в область определения функции.":
+            break
+
+elif task_choice == 5:
+    n = int(input("Введите натуральное число N: "))
+    client_socket.sendall(str.encode(str(n)))
+    result = client_socket.recv(1024).decode()
+    print(result)
+
+# Закрываем соединение
+client_socket.close()
